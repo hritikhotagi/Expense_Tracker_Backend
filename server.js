@@ -7,7 +7,6 @@ const incomeRoutes = require('./routes/incomeRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 
-
 const app = express();
 
 // Middleware
@@ -26,6 +25,11 @@ app.use('/api/user', userRoutes);
 app.use('/api/income', incomeRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/category', categoryRoutes);
+
+// **Test Route**
+app.get('/api/test', (req, res) => {
+  res.status(200).send('API is working!');
+});
 
 // Start the server
 const PORT = process.env.PORT || 5000;
