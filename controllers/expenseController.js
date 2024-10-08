@@ -3,7 +3,6 @@ const Income = require('../models/incomeModel');
 
 // Get all expenses
 exports.getExpenses = async (req, res) => {
-  console.log(req.body)
   try {
     const userId = req.body.createdBy;
     const expenses = await Expense.find({ createdBy: userId });
@@ -17,8 +16,7 @@ exports.getExpenses = async (req, res) => {
 
 // Add new expense and deduct from the linked income
 exports.addExpense = async (req, res) => {
-  const { title, amount, category, linkedIncome, createdBy } = req.body;
-  console.log(req.body)
+  const { title, amount, category, linkedIncome, createdBy, date } = req.body;
   try {
     // Find the linked income
     const income = await Income.findById(linkedIncome);
@@ -46,7 +44,8 @@ exports.addExpense = async (req, res) => {
       amount,
       category,
       linkedIncome,
-      createdBy
+      createdBy,
+      date
     });
 
     await newExpense.save();

@@ -14,11 +14,29 @@ exports.getIncomes = async (req, res) => {
 // Add new income
 exports.addIncome = async (req, res) => {
   const { month, amount, createdBy } = req.body;
+
   try {
+    // Check if income for the same month and user already exists
+    const existingIncome = await Income.findOne({ month, createdBy });
+
+    if (existingIncome) {
+      if (existingIncome.isLocked) {
+        // If the existing income is locked, return an error message
+        return res.status(400).json({ message: 'This month\'s income is locked and cannot be updated.' });
+      }
+
+      // If the existing income is unlocked, add the new amount to the existing income
+      existingIncome.amount += amount;
+      await existingIncome.save();
+      return res.status(200).json(existingIncome);
+    }
+
+    // If no existing income for the month, create a new one
     const newIncome = new Income({ 
       month, 
       amount, 
-      createdBy 
+      createdBy,
+      isLocked: false // By default, the new income is not locked
     });
     
     await newIncome.save();
@@ -27,6 +45,7 @@ exports.addIncome = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 // Lock income
 exports.lockIncome = async (req, res) => {

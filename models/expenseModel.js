@@ -15,7 +15,7 @@ const expenseSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    default: Date.now,
+    default: () => Date.now(),
   },
   createdBy: {
     type: String,  // Store Auth0 user ID here
